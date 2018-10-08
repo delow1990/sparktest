@@ -13,7 +13,7 @@ public class Client {
 
     @Id
     @GeneratedValue
-    private String id;
+    private Integer id;
 
     @Column
     private String firstName;

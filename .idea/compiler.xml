@@ -22,6 +22,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar" />
           <entry name="$MAVEN_REPOSITORY$/joda-time/joda-time/2.9.7/joda-time-2.9.7.jar" />
           <entry name="$MAVEN_REPOSITORY$/javax/money/money-api/1.0.1/money-api-1.0.1.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.2/lombok-1.18.2.jar" />
         </processorPath>
         <module name="sparktest" />
       </profile>

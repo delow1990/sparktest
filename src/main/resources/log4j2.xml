@@ -10,5 +10,6 @@
             <AppenderRef ref="Console"/>
         </Root>
         <Logger name="org.hopto.delow" level="trace"/>
+        <Logger level="info" name="org.hibernate"/>
     </Loggers>
 </Configuration>
