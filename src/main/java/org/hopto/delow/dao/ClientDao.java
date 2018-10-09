@@ -7,18 +7,20 @@ import javax.persistence.EntityManager;
 public class ClientDao {
 
     public Client createClient(EntityManager entityManager, Client client) {
-        throw new UnsupportedOperationException("Method 'createClient' is not yet implemented");
+        return entityManager.merge(client);
     }
 
     public Client findById(EntityManager entityManager, String id) {
-        throw new UnsupportedOperationException("Method 'findById' is not yet implemented");
+        return entityManager.find(Client.class, Integer.valueOf(id));
     }
 
     public Client updateClient(EntityManager entityManager, Client client) {
-        throw new UnsupportedOperationException("Method 'updateClient' is not yet implemented");
+        return entityManager.merge(client);
     }
 
     public void deleteById(EntityManager entityManager, String id) {
-        throw new UnsupportedOperationException("Method 'deleteById' is not yet implemented");
+        entityManager.createQuery("delete from Client where id = :id")
+                .setParameter("id", Integer.valueOf(id))
+                .executeUpdate();
     }
 }

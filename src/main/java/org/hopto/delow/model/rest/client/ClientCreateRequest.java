@@ -1,5 +1,6 @@
 package org.hopto.delow.model.rest.client;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -20,6 +21,7 @@ public class ClientCreateRequest {
     private String middleName;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDate birthday;
 
     @NotEmpty

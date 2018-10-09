@@ -1,15 +1,23 @@
 package org.hopto.delow.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import spark.ResponseTransformer;
 
 public class JsonOutConverter implements ResponseTransformer {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectWriter writer;
+
+    public JsonOutConverter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        writer = mapper.writer();
+    }
 
     @Override
     public String render(Object model) throws Exception {
-        return mapper.writeValueAsString(model);
+        return writer.writeValueAsString(model);
     }
 
 }

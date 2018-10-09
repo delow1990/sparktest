@@ -1,5 +1,7 @@
 package org.hopto.delow.model.jpa;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -25,6 +27,7 @@ public class Client {
     private String middleName;
 
     @Column
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private LocalDate birthday;
 
     @Column
@@ -35,6 +38,7 @@ public class Client {
     private String email;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     private List<Card> cards;
 
 }

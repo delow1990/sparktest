@@ -16,4 +16,8 @@ public enum JpaManager {
     public EntityManager getEntityManager() {
         return factory.createEntityManager();
     }
+
+    public EntityManagerFactory getFactory() {
+        return factory;
+    }
 }

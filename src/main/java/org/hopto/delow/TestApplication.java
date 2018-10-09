@@ -1,10 +1,14 @@
 package org.hopto.delow;
 
 
+import org.hopto.delow.controller.ClientController;
 import org.hopto.delow.controller.HelloWorldController;
 import org.hopto.delow.converter.JsonOutConverter;
+import org.hopto.delow.dao.ClientDao;
+import org.hopto.delow.dao.JpaManager;
 import org.hopto.delow.headers.ContentType;
 import org.hopto.delow.model.rest.HelloResponse;
+import org.hopto.delow.service.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.QueryParamsMap;
@@ -20,6 +24,12 @@ public class TestApplication {
         JsonOutConverter converter = new JsonOutConverter();
 
         HelloWorldController controller = new HelloWorldController();
+
+        ClientDao dao = new ClientDao();
+
+        ClientService clientService = new ClientService(dao, JpaManager.INSTANCE.getFactory());
+
+        ClientController clientController = new ClientController(clientService);
 
         port(8081);
 
@@ -43,6 +53,10 @@ public class TestApplication {
                 return resp;
             }, converter);
             post("/h", controller::post, converter);
+            post("/client/create", clientController::createClientHandler, converter);
+            post("/client/update", clientController::updateClientHandler, converter);
+            post("/client/delete", clientController::deleteClientHandler, converter);
+            get("/client/:id", clientController::getClientHandler, converter);
 
         });
     }
