@@ -1,10 +1,12 @@
 package org.hopto.delow.service;
 
 import org.hopto.delow.dao.ClientDao;
+import org.hopto.delow.dao.JpaManager;
 import org.hopto.delow.model.jpa.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.time.LocalDate;
 
@@ -12,13 +14,15 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ClientService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ClientService.class);
+
     private ClientDao clientDao;
 
     private ThreadLocal<EntityManager> em;
 
-    public ClientService(ClientDao clientDao, EntityManagerFactory factory) {
+    public ClientService(ClientDao clientDao) {
         this.clientDao = clientDao;
-        em = ThreadLocal.withInitial(factory::createEntityManager);
+        em = ThreadLocal.withInitial(JpaManager.INSTANCE::getEntityManager);
     }
 
     public Client createClient(String firstName, String lastName, String middleName, LocalDate birthday, String email, String phone) {
@@ -34,8 +38,9 @@ public class ClientService {
         client.setEmail(email);
         client.setPhoneNumber(phone);
 
-        client = clientDao.createClient(entityManager, client);
+        client = clientDao.createEntity(entityManager, client);
         transaction.commit();
+        logger.info("Created client: {}", client);
         return client;
     }
 
@@ -57,7 +62,7 @@ public class ClientService {
             client.setPhoneNumber(phone);
         if (birthday != null)
             client.setBirthday(birthday);
-        client = clientDao.updateClient(entityManager, client);
+        client = clientDao.updateEntity(entityManager, client);
 
         transaction.commit();
         return client;
@@ -68,7 +73,7 @@ public class ClientService {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
 
-        clientDao.deleteById(entityManager, id);
+        clientDao.deactivateClient(entityManager, id);
 
         transaction.commit();
     }

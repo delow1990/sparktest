@@ -18,8 +18,6 @@ public class ClientController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
-    private final ObjectMapper mapper;
-
     private final ObjectReader clientCreateRequestReader;
     private final ObjectReader clientUpdateRequestReader;
     private final ObjectReader clientDeleteRequestReader;
@@ -28,7 +26,7 @@ public class ClientController {
 
     public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         clientCreateRequestReader = mapper.readerFor(ClientCreateRequest.class);
         clientUpdateRequestReader = mapper.readerFor(ClientUpdateRequest.class);
