@@ -1,11 +1,14 @@
 package org.hopto.delow.model.jpa;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"NUMBER", "EXPDATE"}))
 public class Card {
 
     @Id
@@ -19,7 +22,7 @@ public class Card {
     private String cardHolder;
 
     @Column
-    private String expDate;
+    private LocalDate expDate;
 
     @Column
     private String codeHash;
@@ -29,7 +32,8 @@ public class Card {
     private CardType cardType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @JoinColumn(name = "ACCOUNT_ID")
+    @ToString.Exclude
+    private Account account;
 
 }

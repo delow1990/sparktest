@@ -3,6 +3,7 @@ package org.hopto.delow.model.jpa;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -37,8 +38,12 @@ public class Client {
     @Email
     private String email;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @OneToMany(mappedBy = "client")
     @JsonIgnore
-    private List<Card> cards;
+    @ToString.Exclude
+    private List<Account> accounts;
 
 }
