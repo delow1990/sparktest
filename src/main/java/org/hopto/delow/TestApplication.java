@@ -1,13 +1,18 @@
 package org.hopto.delow;
 
 
+import org.hopto.delow.controller.AccountController;
+import org.hopto.delow.controller.CardController;
 import org.hopto.delow.controller.ClientController;
 import org.hopto.delow.controller.HelloWorldController;
 import org.hopto.delow.converter.JsonOutConverter;
+import org.hopto.delow.dao.AccountDao;
+import org.hopto.delow.dao.CardDao;
 import org.hopto.delow.dao.ClientDao;
-import org.hopto.delow.dao.JpaManager;
 import org.hopto.delow.headers.ContentType;
 import org.hopto.delow.model.rest.HelloResponse;
+import org.hopto.delow.service.AccountService;
+import org.hopto.delow.service.CardService;
 import org.hopto.delow.service.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +30,17 @@ public class TestApplication {
 
         HelloWorldController controller = new HelloWorldController();
 
-        ClientDao dao = new ClientDao();
+        ClientDao clientDao = new ClientDao();
+        AccountDao accountDao = new AccountDao();
+        CardDao cardDao = new CardDao();
 
-        ClientService clientService = new ClientService(dao, JpaManager.INSTANCE.getFactory());
+        ClientService clientService = new ClientService(clientDao);
+        AccountService accountService = new AccountService(accountDao, clientDao);
+        CardService cardService = new CardService(clientDao, cardDao, accountDao);
 
         ClientController clientController = new ClientController(clientService);
+        AccountController accountController = new AccountController(accountService);
+        CardController cardController = new CardController(cardService);
 
         port(8081);
 
@@ -53,10 +64,19 @@ public class TestApplication {
                 return resp;
             }, converter);
             post("/h", controller::post, converter);
-            post("/client/create", clientController::createClientHandler, converter);
-            post("/client/update", clientController::updateClientHandler, converter);
-            post("/client/delete", clientController::deleteClientHandler, converter);
-            get("/client/:id", clientController::getClientHandler, converter);
+            path("/client", () -> {
+                post("/create", clientController::createClientHandler, converter);
+                post("/update", clientController::updateClientHandler, converter);
+                post("/delete", clientController::deleteClientHandler, converter);
+                get("/:id", clientController::getClientHandler, converter);
+            });
+            path("/account", () -> {
+                post("/create", accountController::createAccountHandler, converter);
+                post("/block", accountController::blockAccountHandler, converter);
+            });
+            path("/card", () -> {
+                post("/create", cardController::createCardHandler, converter);
+            });
 
         });
     }
