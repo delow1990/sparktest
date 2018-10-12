@@ -1,22 +1,21 @@
 package org.hopto.delow;
 
 
-import org.hopto.delow.controller.AccountController;
-import org.hopto.delow.controller.CardController;
-import org.hopto.delow.controller.ClientController;
-import org.hopto.delow.controller.HelloWorldController;
+import org.hopto.delow.controller.*;
 import org.hopto.delow.converter.JsonOutConverter;
-import org.hopto.delow.dao.AccountDao;
-import org.hopto.delow.dao.CardDao;
-import org.hopto.delow.dao.ClientDao;
+import org.hopto.delow.dao.*;
 import org.hopto.delow.headers.ContentType;
 import org.hopto.delow.model.rest.HelloResponse;
 import org.hopto.delow.service.AccountService;
 import org.hopto.delow.service.CardService;
 import org.hopto.delow.service.ClientService;
+import org.hopto.delow.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.QueryParamsMap;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import static spark.Spark.*;
 
@@ -33,14 +32,25 @@ public class TestApplication {
         ClientDao clientDao = new ClientDao();
         AccountDao accountDao = new AccountDao();
         CardDao cardDao = new CardDao();
+        TransactionDao transactionDao = new TransactionDao();
+        EntityManagerFactory factory;
 
-        ClientService clientService = new ClientService(clientDao);
-        AccountService accountService = new AccountService(accountDao, clientDao);
-        CardService cardService = new CardService(clientDao, cardDao, accountDao);
+        //well that's ugly
+        if (args.length == 0)
+            factory = JpaManager.INSTANCE.getFactory();
+        else
+            factory = Persistence.createEntityManagerFactory(args[0]);
+
+        ClientService clientService = new ClientService(clientDao, factory);
+        AccountService accountService = new AccountService(accountDao, clientDao, factory);
+        CardService cardService = new CardService(clientDao, cardDao, accountDao, factory);
+        TransactionService transactionService = new TransactionService(accountDao, cardDao, transactionDao, factory);
 
         ClientController clientController = new ClientController(clientService);
         AccountController accountController = new AccountController(accountService);
         CardController cardController = new CardController(cardService);
+        TransactionController transactionController = new TransactionController(transactionService);
+
 
         port(8081);
 
@@ -76,6 +86,9 @@ public class TestApplication {
             });
             path("/card", () -> {
                 post("/create", cardController::createCardHandler, converter);
+            });
+            path("/transaction", () -> {
+                post("/create", transactionController::createTransactionHandler, converter);
             });
 
         });

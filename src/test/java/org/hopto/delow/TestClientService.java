@@ -15,17 +15,17 @@ import java.time.LocalDate;
 
 import static org.mockito.Mockito.*;
 
-public class TestClientService {
+class TestClientService {
 
 
-    EntityManagerFactory entityManagerFactory = mock(EntityManagerFactory.class);
-    EntityManager entityManager = mock(EntityManager.class);
-    EntityTransaction entityTransaction = mock(EntityTransaction.class);
-    ClientDao dao = mock(ClientDao.class);
-    Client returnedClient;
+    private EntityManagerFactory entityManagerFactory = mock(EntityManagerFactory.class);
+    private EntityManager entityManager = mock(EntityManager.class);
+    private EntityTransaction entityTransaction = mock(EntityTransaction.class);
+    private ClientDao dao = mock(ClientDao.class);
+    private Client returnedClient;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         when(entityManagerFactory.createEntityManager()).thenReturn(entityManager);
         when(entityManager.getTransaction()).thenReturn(entityTransaction);
         doNothing().when(entityTransaction).begin();
@@ -43,7 +43,7 @@ public class TestClientService {
     }
 
     @Test
-    public void testClientRetrieval() {
+    void testClientRetrieval() {
         final String id = returnedClient.getId().toString();
 
         when(dao.findById(any(EntityManager.class), eq(id))).thenReturn(returnedClient);
@@ -57,7 +57,7 @@ public class TestClientService {
 
 
     @Test
-    public void testClientCreation() {
+    void testClientCreation() {
 
     }
 
