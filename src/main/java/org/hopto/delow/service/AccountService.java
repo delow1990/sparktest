@@ -2,7 +2,6 @@ package org.hopto.delow.service;
 
 import org.hopto.delow.dao.AccountDao;
 import org.hopto.delow.dao.ClientDao;
-import org.hopto.delow.dao.JpaManager;
 import org.hopto.delow.model.jpa.Account;
 import org.hopto.delow.model.jpa.Client;
 import org.hopto.delow.model.jpa.CurrencyType;
@@ -10,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 public class AccountService {
@@ -22,10 +22,10 @@ public class AccountService {
 
     private ThreadLocal<EntityManager> em;
 
-    public AccountService(AccountDao accountDao, ClientDao clientDao) {
+    public AccountService(AccountDao accountDao, ClientDao clientDao, EntityManagerFactory entityManagerFactory) {
         this.accountDao = accountDao;
         this.clientDao = clientDao;
-        em = ThreadLocal.withInitial(JpaManager.INSTANCE::getEntityManager);
+        em = ThreadLocal.withInitial(entityManagerFactory::createEntityManager);
     }
 
     public Account createAccount(String clientId, CurrencyType currencyType) {

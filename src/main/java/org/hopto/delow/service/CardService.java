@@ -1,19 +1,15 @@
 package org.hopto.delow.service;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.hopto.delow.dao.AccountDao;
-import org.hopto.delow.dao.CardDao;
-import org.hopto.delow.dao.ClientDao;
-import org.hopto.delow.dao.JpaManager;
+import org.hopto.delow.dao.*;
 import org.hopto.delow.model.jpa.Account;
 import org.hopto.delow.model.jpa.Card;
 import org.hopto.delow.model.jpa.CardType;
-import org.hopto.delow.model.jpa.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
@@ -35,11 +31,14 @@ public class CardService {
 
     private static final int YEARS_TO_ADD_ON_CREATION = 3;
 
-    public CardService(ClientDao clientDao, CardDao cardDao, AccountDao accountDao) {
+    private final CardNumberGenerator cardNumberGenerator;
+
+    public CardService(ClientDao clientDao, CardDao cardDao, AccountDao accountDao, EntityManagerFactory entityManagerFactory) {
         this.clientDao = clientDao;
         this.cardDao = cardDao;
         this.accountDao = accountDao;
-        em = ThreadLocal.withInitial(JpaManager.INSTANCE::getEntityManager);
+        cardNumberGenerator = new CardNumberGenerator();
+        em = ThreadLocal.withInitial(entityManagerFactory::createEntityManager);
     }
 
     public Card createCard(String accountId, String cardHolder, CardType cardType) {
@@ -53,6 +52,7 @@ public class CardService {
 
         card.setCardType(cardType);
         card.setCardHolder(cardHolder);
+        card.setNumber(cardNumberGenerator.getNewNumber());
 
         LocalDate date = LocalDate.now()
                 .plus(YEARS_TO_ADD_ON_CREATION, ChronoUnit.YEARS)

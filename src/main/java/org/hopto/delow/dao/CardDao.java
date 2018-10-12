@@ -21,6 +21,12 @@ public class CardDao implements DefaultDao<Card> {
         return entityManager.merge(card);
     }
 
+    public Card findByNumberJoinAccount(EntityManager entityManager, String number) {
+        return (Card) entityManager.createQuery("select c from Card c join fetch c.account a where c.number = :number")
+                .setParameter("number", number)
+                .getSingleResult();
+    }
+
     @Override
     public void deleteById(EntityManager entityManager, String id) {
         entityManager.createQuery("delete from Card where id = :id")

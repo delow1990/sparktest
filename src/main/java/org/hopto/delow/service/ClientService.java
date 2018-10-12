@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import java.time.LocalDate;
 
@@ -20,9 +21,9 @@ public class ClientService {
 
     private ThreadLocal<EntityManager> em;
 
-    public ClientService(ClientDao clientDao) {
+    public ClientService(ClientDao clientDao, EntityManagerFactory entityManagerFactory) {
         this.clientDao = clientDao;
-        em = ThreadLocal.withInitial(JpaManager.INSTANCE::getEntityManager);
+        em = ThreadLocal.withInitial(entityManagerFactory::createEntityManager);
     }
 
     public Client createClient(String firstName, String lastName, String middleName, LocalDate birthday, String email, String phone) {

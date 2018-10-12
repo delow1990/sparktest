@@ -10,7 +10,7 @@ public enum JpaManager {
     private EntityManagerFactory factory;
 
     JpaManager() {
-        factory = Persistence.createEntityManagerFactory("test");
+        factory = Persistence.createEntityManagerFactory("cardService");
     }
 
     public EntityManager getEntityManager() {

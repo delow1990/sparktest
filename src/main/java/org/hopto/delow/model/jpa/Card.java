@@ -12,7 +12,8 @@ import java.time.LocalDate;
 public class Card {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "cardIdSequence")
+    @SequenceGenerator(name = "cardIdSequence", initialValue = 50)
     private Integer id;
 
     @Column

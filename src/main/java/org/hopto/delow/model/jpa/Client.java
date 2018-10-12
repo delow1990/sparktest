@@ -15,7 +15,8 @@ import java.util.List;
 public class Client {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "clientIdSequence")
+    @SequenceGenerator(name = "clientIdSequence", initialValue = 50)
     private Integer id;
 
     @Column

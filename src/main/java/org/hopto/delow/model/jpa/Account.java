@@ -6,13 +6,13 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
 @Data
-
+@Entity
 public class Account {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "accountIdSequence")
+    @SequenceGenerator(name = "accountIdSequence", initialValue = 50)
     private Integer id;
 
     @Column(nullable = false)
